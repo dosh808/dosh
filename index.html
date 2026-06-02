@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dosh – Mix & Mastering</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+:root {
+  --ice:#7ab8d4;--ice2:#a8d4ec;--ice3:#cce8f5;
+  --gold:#d4a843;--gold2:#e8c96a;
+  --bg:#060d14;
+  --text:#e8f2f8;--text2:#90b8cc;--text3:#405060;
+  --g:rgba(122,184,212,0.09);--gb:rgba(122,184,212,0.25);--gbb:rgba(168,212,236,0.45);
+  --sh:0 8px 32px rgba(0,0,0,0.5),0 1px 0 rgba(122,184,212,0.1) inset;
+  --shl:0 24px 64px rgba(0,0,0,0.6),0 1px 0 rgba(122,184,212,0.18) inset;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+
+.blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(90px)}
+.b1{width:800px;height:800px;background:rgba(100,170,210,0.11);top:-250px;right:-250px}
+.b2{width:600px;height:600px;background:rgba(212,168,67,0.07);bottom:-150px;left:-150px}
+.b3{width:450px;height:450px;background:rgba(70,130,170,0.08);top:40%;left:25%;transform:translate(-50%,-50%)}
+
+/* NAV */
+nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:200;
+  width:calc(100% - 40px);max-width:900px;
+  display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.5rem;
+  background:rgba(8,18,30,0.7);border:1px solid var(--gb);border-radius:100px;
+  backdrop-filter:blur(32px) saturate(160%);-webkit-backdrop-filter:blur(32px) saturate(160%);
+  box-shadow:0 8px 40px rgba(0,0,0,0.5),0 1px 0 rgba(122,184,212,0.12) inset,0 0 0 1px rgba(122,184,212,0.04)}
+.nav-logo-img{height:26px;display:block;filter:drop-shadow(0 0 10px rgba(122,184,212,0.5))}
+.nav-links{display:flex;gap:1.6rem;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:.73rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;transition:color .25s}
+.nav-links a:hover{color:var(--ice2)}
+
+/* GLASS */
+.gc{background:var(--g);border:1px solid var(--gb);border-radius:28px;
+  backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);
+  box-shadow:var(--sh);transition:border-color .3s,box-shadow .3s}
+.gc:hover{border-color:var(--gbb);box-shadow:var(--shl)}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:7rem 1.5rem 4rem;position:relative;z-index:1}
+
+.logo-glass{
+  background:linear-gradient(135deg,rgba(122,184,212,0.12),rgba(80,140,180,0.06));
+  border:1px solid var(--gbb);border-radius:40px;
+  backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);
+  box-shadow:0 12px 50px rgba(0,0,0,0.55),0 0 80px rgba(122,184,212,0.12),0 1px 0 rgba(200,235,255,0.25) inset,0 -1px 0 rgba(0,0,0,0.3) inset;
+  padding:2.2rem 3rem;margin-bottom:2.5rem;display:inline-block;position:relative;overflow:hidden}
+.logo-glass::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;
+  background:linear-gradient(180deg,rgba(200,235,255,0.08),transparent);pointer-events:none;border-radius:38px 38px 0 0}
+.logo-glass::after{content:'';position:absolute;inset:0;border-radius:39px;
+  background:linear-gradient(135deg,rgba(122,184,212,0.06) 0%,transparent 50%,rgba(0,0,0,0.1) 100%);pointer-events:none}
+.logo-img{width:min(260px,55vw);display:block;position:relative;z-index:1;
+  filter:drop-shadow(0 0 30px rgba(122,184,212,0.5)) drop-shadow(0 4px 20px rgba(0,0,0,0.6))}
+
+.badge{display:inline-flex;align-items:center;gap:.6rem;padding:.5rem 1.2rem;
+  background:rgba(122,184,212,0.1);border:1px solid var(--gb);border-radius:100px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ice2);font-weight:600;
+  margin-bottom:1.8rem;box-shadow:0 4px 20px rgba(0,0,0,0.35)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold2)}
+
+.flags{display:flex;gap:.7rem;justify-content:center;margin-bottom:2.5rem;flex-wrap:wrap}
+.flag{padding:.4rem 1rem;background:rgba(122,184,212,0.07);border:1px solid var(--gb);border-radius:100px;
+  font-size:.71rem;color:var(--text2);font-weight:500;backdrop-filter:blur(12px)}
+
+.cta{display:inline-block;padding:1rem 2.8rem;
+  background:linear-gradient(135deg,rgba(122,184,212,0.22),rgba(80,140,180,0.14));
+  border:1px solid var(--gbb);border-radius:100px;color:var(--ice2);text-decoration:none;
+  font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.45),0 0 20px rgba(122,184,212,0.08);transition:all .3s;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;
+  background:linear-gradient(180deg,rgba(200,235,255,0.1),transparent);border-radius:100px 100px 0 0;pointer-events:none}
+.cta:hover{background:linear-gradient(135deg,rgba(122,184,212,0.32),rgba(80,140,180,0.22));
+  transform:translateY(-2px);box-shadow:0 12px 44px rgba(0,0,0,0.55),0 0 30px rgba(122,184,212,0.15)}
+
+/* SECTIONS */
+.sec{padding:5rem 5vw;position:relative;z-index:1}
+.inner{max-width:1060px;margin:0 auto}
+.pill{display:inline-block;padding:.35rem 1rem;
+  background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.32);border-radius:100px;
+  font-size:.67rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:1.2rem}
+.stitle{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;line-height:1.05;color:var(--text);margin-bottom:1.5rem}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:2rem;align-items:start}
+.acard{padding:2.5rem}
+.acard p{color:var(--text2);line-height:1.9;font-size:.92rem;margin-bottom:.9rem}
+.acard p span{color:var(--ice2)}
+.artists-row{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.4rem}
+.artist-chip{padding:.38rem .9rem;background:rgba(122,184,212,0.08);border:1px solid var(--gb);
+  border-radius:100px;font-size:.72rem;color:var(--text2);font-weight:500}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.stat{padding:1.8rem 1.5rem;text-align:center}
+.snum{font-size:2rem;font-weight:900;color:var(--text);line-height:1}
+.sunit{color:var(--gold);font-size:1rem}
+.slbl{font-size:.67rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-top:.4rem;font-weight:500}
+
+/* SERVICES */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+.svc{padding:2.5rem 2rem;position:relative;overflow:hidden}
+.svc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--ice),transparent);opacity:.4}
+.svc::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;
+  background:linear-gradient(180deg,rgba(122,184,212,0.04),transparent);pointer-events:none}
+.sico{width:50px;height:50px;border-radius:15px;background:rgba(122,184,212,0.1);
+  border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;margin-bottom:1.3rem;box-shadow:0 4px 16px rgba(0,0,0,0.3)}
+.sname{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.6rem}
+.sdesc{font-size:.82rem;color:var(--text2);line-height:1.8}
+.stag{display:inline-block;margin-top:1.3rem;padding:.32rem .85rem;font-size:.63rem;
+  letter-spacing:.15em;text-transform:uppercase;border-radius:100px;font-weight:600}
+.tg{background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.35);color:var(--gold)}
+.ti{background:rgba(122,184,212,0.1);border:1px solid rgba(122,184,212,0.35);color:var(--ice2)}
+
+/* CERTIFICATIONS */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:2.5rem}
+.cert{padding:1.8rem 1.6rem;text-align:center;position:relative;overflow:hidden}
+.cert::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5}
+.cert-icon{font-size:2.2rem;margin-bottom:.8rem;display:block}
+.cert-title{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.cert-sub{font-size:.78rem;color:var(--text2);line-height:1.6}
+.cert-badge{display:inline-block;margin-top:.7rem;padding:.3rem .85rem;font-size:.63rem;
+  letter-spacing:.15em;text-transform:uppercase;border-radius:100px;font-weight:700}
+.cb-gold{background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.4);color:var(--gold)}
+.cb-de{background:rgba(122,184,212,0.1);border:1px solid rgba(122,184,212,0.3);color:var(--ice2)}
+
+/* CREDITS */
+.credits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:1.2rem;margin-top:2.5rem}
+.cc{padding:0;overflow:hidden}
+.cc-top{padding:1.5rem 1.8rem 1rem;display:flex;align-items:flex-start;gap:1.1rem}
+.cnum{font-size:1.5rem;font-weight:900;color:rgba(122,184,212,0.22);line-height:1;flex-shrink:0;width:1.8rem;text-align:center}
+.ctitle{font-size:.97rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.cartist{font-size:.8rem;color:var(--ice2);font-weight:500}
+.crole{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-top:.25rem}
+.cbadge{display:inline-flex;align-items:center;gap:.4rem;margin-top:.5rem;padding:.22rem .7rem;
+  font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;border-radius:100px;font-weight:600;
+  background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.32);color:var(--gold)}
+.spotify-frame{border:none;border-top:1px solid var(--gb);border-radius:0 0 27px 27px;
+  display:block;width:100%;height:80px;background:transparent;opacity:.9}
+
+/* Spotify playlist link card */
+.playlist-link{
+  display:flex;align-items:center;gap:1.2rem;padding:1.4rem 1.8rem;
+  margin-top:1.5rem;text-decoration:none;
+  background:linear-gradient(135deg,rgba(30,215,96,0.08),rgba(30,215,96,0.04));
+  border:1px solid rgba(30,215,96,0.25);border-radius:20px;
+  transition:all .3s;
+}
+.playlist-link:hover{background:linear-gradient(135deg,rgba(30,215,96,0.14),rgba(30,215,96,0.07));
+  border-color:rgba(30,215,96,0.45);transform:translateY(-2px)}
+.sp-icon{width:44px;height:44px;border-radius:50%;background:rgba(30,215,96,0.15);
+  border:1px solid rgba(30,215,96,0.3);display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;flex-shrink:0}
+.sp-text{flex:1}
+.sp-label{font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(30,215,96,0.7);font-weight:600;margin-bottom:.2rem}
+.sp-name{font-size:.92rem;font-weight:700;color:var(--text)}
+.sp-arrow{color:rgba(30,215,96,0.5);font-size:1.1rem}
+
+/* CONTACT */
+#contact{text-align:center}
+.ccard{max-width:580px;margin:0 auto;padding:3.5rem 3rem;
+  background:linear-gradient(135deg,rgba(122,184,212,0.08),rgba(80,140,180,0.04));
+  border:1px solid var(--gbb);border-radius:36px;
+  backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);
+  box-shadow:var(--shl),0 0 80px rgba(122,184,212,0.07);position:relative;overflow:hidden}
+.ccard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--ice2),transparent)}
+.csub{color:var(--text3);font-size:.9rem;line-height:1.8;margin-bottom:2.5rem}
+.cemail{display:inline-block;padding:1rem 2.5rem;
+  background:linear-gradient(135deg,rgba(122,184,212,0.16),rgba(80,140,180,0.1));
+  border:1px solid var(--gbb);border-radius:100px;color:var(--ice2);text-decoration:none;
+  font-size:.95rem;font-weight:600;letter-spacing:.04em;backdrop-filter:blur(12px);
+  transition:all .3s;box-shadow:0 4px 24px rgba(0,0,0,0.4);position:relative;overflow:hidden}
+.cemail::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;
+  background:linear-gradient(180deg,rgba(200,235,255,0.08),transparent);pointer-events:none;border-radius:100px}
+.cemail:hover{background:linear-gradient(135deg,rgba(122,184,212,0.26),rgba(80,140,180,0.18));
+  transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.5),0 0 20px rgba(122,184,212,0.12)}
+.socials{display:flex;gap:1rem;justify-content:center;margin-top:2rem;flex-wrap:wrap}
+.sbtn{padding:.55rem 1.4rem;background:rgba(122,184,212,0.07);border:1px solid var(--gb);
+  border-radius:100px;color:var(--text2);text-decoration:none;
+  font-size:.71rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;transition:all .25s}
+.sbtn:hover{background:rgba(122,184,212,0.14);color:var(--ice2);border-color:var(--gbb)}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--gb);padding:2rem 5vw;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+  font-size:.71rem;color:var(--text3);letter-spacing:.1em;
+  background:rgba(4,10,18,0.85);backdrop-filter:blur(12px)}
+footer b{color:var(--ice2)}
+
+/* REVEAL */
+.r{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.r.v{opacity:1;transform:translateY(0)}
+
+@media(max-width:800px){.about-grid,.svc-grid{grid-template-columns:1fr}}
+@media(max-width:540px){.nav-links{display:none}nav{padding:.75rem 1.3rem}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<!-- NAV -->
+<nav>
+  <img class="nav-logo-img" id="nav-logo" src="" alt="Dosh"/>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#certs">Certs</a></li>
+    <li><a href="#credits">Credits</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="logo-glass r">
+    <img class="logo-img" id="hero-logo" src="" alt="Dosh"/>
+  </div>
+  <div class="badge r" style="transition-delay:.1s"><span class="dot"></span>Mix &amp; Mastering · Music Production</div>
+  <div class="flags r" style="transition-delay:.2s">
+    <span class="flag">🇩🇪 Deutschland</span>
+    <span class="flag">🇫🇷 Frankreich</span>
+    <span class="flag">🇪🇸 Spanien</span>
+  </div>
+  <a href="#contact" class="cta r" style="transition-delay:.3s">Get In Touch</a>
+</section>
+
+<!-- ABOUT -->
+<section class="sec" id="about">
+  <div class="inner">
+    <div class="about-grid">
+      <div class="acard gc r">
+        <span class="pill">About</span>
+        <h2 class="stitle">The Sound<br/>Behind the Music</h2>
+        <p>Ich bin <span>Dosh</span> – Musikproduzent und Mix-/Mastering-Engineer aus Deutschland. Meine Arbeit ist tief in der deutschen und europäischen Rap-Szene verwurzelt.</p>
+        <p>Ich habe mit Künstlern wie <span>Haftbefehl</span>, <span>Capo</span>, <span>Azzi Memo</span>, <span>Niaks</span> und <span>Beny Jr</span> zusammengearbeitet – in Deutschland, Frankreich und Spanien.</p>
+        <div class="artists-row">
+          <span class="artist-chip">Haftbefehl</span>
+          <span class="artist-chip">Capo</span>
+          <span class="artist-chip">Azzi Memo</span>
+          <span class="artist-chip">Niaks</span>
+          <span class="artist-chip">Beny Jr</span>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat gc r" style="transition-delay:.1s">
+          <div class="snum">DE<span class="sunit">+</span></div><div class="slbl">Heimatmarkt</div>
+        </div>
+        <div class="stat gc r" style="transition-delay:.15s">
+          <div class="snum">3<span class="sunit">+</span></div><div class="slbl">Länder</div>
+        </div>
+        <div class="stat gc r" style="transition-delay:.2s">
+          <div class="snum" style="font-size:1.3rem;padding-top:.3rem">Mix</div><div class="slbl">&amp; Mastering</div>
+        </div>
+        <div class="stat gc r" style="transition-delay:.25s">
+          <div class="snum" style="color:var(--gold)">★</div><div class="slbl">Charts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="sec" id="services">
+  <div class="inner">
+    <span class="pill r">Services</span>
+    <h2 class="stitle r">Was ich anbiete</h2>
+    <div class="svc-grid">
+      <div class="svc gc r">
+        <div class="sico">🎚️</div>
+        <div class="sname">Mixing</div>
+        <div class="sdesc">Professionelles Abmischen deiner Stems zu einem ausgewogenen, druckvollen Sound – abgestimmt auf dein Genre und deine Vision.</div>
+        <span class="stag tg">Auf Anfrage</span>
+      </div>
+      <div class="svc gc r" style="transition-delay:.1s">
+        <div class="sico">🔊</div>
+        <div class="sname">Mastering</div>
+        <div class="sdesc">Streaming-optimiertes Mastering für maximale Klarheit – Spotify, Apple Music, YouTube und mehr.</div>
+        <span class="stag tg">Auf Anfrage</span>
+      </div>
+      <div class="svc gc r" style="transition-delay:.2s">
+        <div class="sico">🎛️</div>
+        <div class="sname">Mix &amp; Master Bundle</div>
+        <div class="sdesc">Von Rohspuren bis zum release-fähigen Master – alles aus einer Hand.</div>
+        <span class="stag ti">Empfohlen</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section class="sec" id="certs">
+  <div class="inner">
+    <span class="pill r">Zertifizierungen</span>
+    <h2 class="stitle r">Auszeichnungen</h2>
+    <div class="cert-grid">
+      <div class="cert gc r">
+        <span class="cert-icon">🥇</span>
+        <div class="cert-title">Platz 1 · FR Album Charts</div>
+        <div class="cert-sub">Niaks – Mandat de Dépôt<br/>SNEP · 2023</div>
+        <span class="cert-badge cb-gold">🇫🇷 #1 Charts</span>
+      </div>
+      <div class="cert gc r" style="transition-delay:.08s">
+        <span class="cert-icon">🏅</span>
+        <div class="cert-title">Gold · Frankreich</div>
+        <div class="cert-sub">Niaks – Mandat de Dépôt<br/>SNEP · 50.000 Eq. Ventes</div>
+        <span class="cert-badge cb-gold">🇫🇷 Or / Gold</span>
+      </div>
+      <div class="cert gc r" style="transition-delay:.16s">
+        <span class="cert-icon">🏅</span>
+        <div class="cert-title">Gold · Frankreich</div>
+        <div class="cert-sub">Niaks – Mahmouma<br/>SNEP · Single</div>
+        <span class="cert-badge cb-gold">🇫🇷 Or / Gold</span>
+      </div>
+      <div class="cert gc r" style="transition-delay:.24s">
+        <span class="cert-icon">📊</span>
+        <div class="cert-title">DE Album Charts</div>
+        <div class="cert-sub">Haftbefehl – Mainpark Baby<br/>Urban / 2022</div>
+        <span class="cert-badge cb-de">🇩🇪 Charts</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREDITS -->
+<section class="sec" id="credits">
+  <div class="inner">
+    <span class="pill r">Credits</span>
+    <h2 class="stitle r">Selected Works</h2>
+    <div class="credits-grid">
+
+      <div class="cc gc r">
+        <div class="cc-top">
+          <div class="cnum">01</div>
+          <div>
+            <div class="ctitle">Mahmouma</div>
+            <div class="cartist">Niaks</div>
+            <div class="crole">Producer &amp; Composer · 🇫🇷 Gold Single</div>
+            <span class="cbadge">🏅 Gold · FR</span>
+          </div>
+        </div>
+        <iframe class="spotify-frame" src="https://open.spotify.com/embed/track/5nCi3BB41mBaMH9gfr6Su8?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+
+      <div class="cc gc r" style="transition-delay:.08s">
+        <div class="cc-top">
+          <div class="cnum">02</div>
+          <div>
+            <div class="ctitle">Mandat de Dépôt (Album)</div>
+            <div class="cartist">Niaks</div>
+            <div class="crole">Producer · #1 FR Charts · 🏅 Gold</div>
+            <span class="cbadge">🥇 #1 · Gold · FR</span>
+          </div>
+        </div>
+        <iframe class="spotify-frame" src="https://open.spotify.com/embed/album/1708377758?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+
+      <div class="cc gc r" style="transition-delay:.16s">
+        <div class="cc-top">
+          <div class="cnum">03</div>
+          <div>
+            <div class="ctitle">PECHSCHWARZ</div>
+            <div class="cartist">Capo</div>
+            <div class="crole">Producer · Album "HYAT" (2021)</div>
+            <span class="cbadge">🇩🇪 Prod.</span>
+          </div>
+        </div>
+        <iframe class="spotify-frame" src="https://open.spotify.com/embed/track/0q5GaWiBEd2LikN7VFzpxI?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+
+      <div class="cc gc r" style="transition-delay:.24s">
+        <div class="cc-top">
+          <div class="cnum">04</div>
+          <div>
+            <div class="ctitle">Bist du wach?</div>
+            <div class="cartist">Azzi Memo + 18 Artists</div>
+            <div class="crole">Producer · Benefizsong · 2020</div>
+            <span class="cbadge">🇩🇪 Collab</span>
+          </div>
+        </div>
+        <iframe class="spotify-frame" src="https://open.spotify.com/embed/track/1DlzuKBIbQi5aCgX1dYlBL?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+
+      <div class="cc gc r" style="transition-delay:.32s">
+        <div class="cc-top">
+          <div class="cnum">05</div>
+          <div>
+            <div class="ctitle">Song mit Beny Jr</div>
+            <div class="cartist">Beny Jr</div>
+            <div class="crole">Producer · 🇪🇸 Spanien</div>
+            <span class="cbadge">🇪🇸 Intl.</span>
+          </div>
+        </div>
+        <!-- Spotify-ID ergänzen wenn Song bekannt -->
+        <div style="padding:.8rem 1.8rem 1.2rem;font-size:.75rem;color:var(--text3);font-style:italic">
+          ← Songtitel &amp; Spotify-Link ergänzen
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Spotify Playlist Link -->
+    <a href="https://open.spotify.com/user/1140472211/playlist/0BIQnmiXfg4pJSzu4H3yjF" target="_blank" class="playlist-link r" style="transition-delay:.4s">
+      <div class="sp-icon">🎵</div>
+      <div class="sp-text">
+        <div class="sp-label">Alle Produktionen</div>
+        <div class="sp-name">PROD. BY DOSH – Spotify Playlist</div>
+      </div>
+      <span class="sp-arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec" id="contact">
+  <div class="inner">
+    <div class="ccard r">
+      <span class="pill">Contact</span>
+      <h2 class="stitle" style="font-size:clamp(1.8rem,4vw,2.8rem)">Let's Work</h2>
+      <p class="csub">Du hast einen Track, der das nächste Level braucht?<br/>Schreib mir – ich melde mich zeitnah zurück.</p>
+      <a href="mailto:prodbydosh@icloud.com" class="cemail">prodbydosh@icloud.com</a>
+      <div class="socials">
+        <a href="#" class="sbtn">Instagram</a>
+        <a href="#" class="sbtn">SoundCloud</a>
+        <a href="#" class="sbtn">Spotify</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 <b>Dosh</b></span>
+  <span>Mix &amp; Mastering · Music Production</span>
+</footer>
+
+<script>
+const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 260">
+<defs>
+<radialGradient id="bg" cx="45%" cy="40%" r="60%"><stop offset="0%" stop-color="#cce8f8"/><stop offset="45%" stop-color="#7ab8d4"/><stop offset="100%" stop-color="#3a6a8a"/></radialGradient>
+<radialGradient id="tg" cx="40%" cy="30%" r="65%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#d0ecf8"/><stop offset="100%" stop-color="#90c8e0"/></radialGradient>
+<radialGradient id="gg" cx="30%" cy="25%" r="70%"><stop offset="0%" stop-color="#f5d060"/><stop offset="55%" stop-color="#d4a843"/><stop offset="100%" stop-color="#9a7020"/></radialGradient>
+<filter id="gw"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<ellipse cx="230" cy="148" rx="195" ry="72" fill="none" stroke="url(#bg)" stroke-width="22" stroke-linecap="round" stroke-dasharray="900 300" stroke-dashoffset="-60" opacity=".95"/>
+<ellipse cx="230" cy="148" rx="195" ry="72" fill="none" stroke="rgba(200,235,255,0.3)" stroke-width="5" stroke-dasharray="900 300" stroke-dashoffset="-60"/>
+<path d="M100,95 Q160,30 290,72" fill="none" stroke="url(#bg)" stroke-width="14" stroke-linecap="round" opacity=".9"/>
+<path d="M100,95 Q160,30 290,72" fill="none" stroke="rgba(200,235,255,0.25)" stroke-width="4" stroke-linecap="round"/>
+<text x="228" y="162" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Impact,sans-serif" font-weight="900" font-size="96" fill="url(#tg)" filter="url(#gw)" letter-spacing="2">DOSH</text>
+<text x="228" y="162" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Impact,sans-serif" font-weight="900" font-size="96" fill="none" stroke="rgba(200,240,255,0.4)" stroke-width="1.5" letter-spacing="2">DOSH</text>
+<g transform="translate(358,62)" filter="url(#gw)"><polygon points="0,-18 4,-6 16,-6 7,2 10,14 0,8 -10,14 -7,2 -16,-6 -4,-6" fill="url(#gg)"/></g>
+<g transform="translate(386,50)" filter="url(#gw)"><polygon points="0,-12 2.5,-4 10,-4 4.5,1.5 6.5,9 0,5.5 -6.5,9 -4.5,1.5 -10,-4 -2.5,-4" fill="url(#gg)" opacity=".9"/></g>
+<g transform="translate(376,82)" filter="url(#gw)"><polygon points="0,-9 2,-3 8,-3 3.5,1 5,7 0,4 -5,7 -3.5,1 -8,-3 -2,-3" fill="url(#gg)" opacity=".75"/></g>
+</svg>`;
+const blob=new Blob([svg],{type:'image/svg+xml'});
+const url=URL.createObjectURL(blob);
+document.getElementById('hero-logo').src=url;
+document.getElementById('nav-logo').src=url;
+
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v')})},{threshold:.1});
+document.querySelectorAll('.r').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
